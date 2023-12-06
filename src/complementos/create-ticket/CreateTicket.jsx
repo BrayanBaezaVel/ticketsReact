@@ -108,9 +108,11 @@ export function CreateTicket() {
         const data = new FormData(event.currentTarget);
         const ticket = {
           area: data.get('areaSelect'),
+          areaSolicitante: data.get('areaSolicitanteSelect'),
           asignador: data.get('asignadorName'),
           tecnico: data.get('tecnicoName'),
-          observacion: data.get('observacion')
+          observacion: data.get('observacion'),
+          estado: 1,
         };
 
         setDataTickets([...dataTickets, ticket]);
@@ -193,6 +195,23 @@ export function CreateTicket() {
                 </Typography>
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                     <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <InputLabel id="areaInput">Area Solicitante</InputLabel>
+                        <Select
+                          required
+                          fullWidth
+                          labelId="areaSolicitanteSelect"
+                          id="areaSolicitanteSelect"
+                          name="areaSolicitanteSelect"
+                          label="Area"
+                          value={areaSelected}
+                          onChange={handleChange}
+                        >
+                          {areas.map((area) => (
+                            <MenuItem value={area.id}>{area.name}</MenuItem>
+                          ))}
+                        </Select>
+                    </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
                         autoComplete="given-name"

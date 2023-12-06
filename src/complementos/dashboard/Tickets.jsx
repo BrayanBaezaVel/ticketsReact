@@ -5,21 +5,24 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Title from './Title';
 
-function createData(id, date, name, shipTo, paymentMethod, amount) {
-  return { id, date, name, shipTo, paymentMethod, amount };
-}
 
-const rows = [
-  createData(
-    0,
-    '16 Mar, 2019',
-    'Elvis Presley',
-    'Tupelo, MS',
-    'VISA ⠀•••• 3719',
-    312.44,
-  ),
+const estados = [
+  {
+    id: 1,
+    name: 'Pendiente',
+  },
+  {
+    id: 2,
+    name: 'Terminado',
+  },
+  {
+    id: 3,
+    name: 'Impedimento',
+  },
 ];
 
 export default function Tickets() {
@@ -36,25 +39,28 @@ export default function Tickets() {
   console.log(tickets);
   return (
     <React.Fragment>
-      <Title>Recent Orders</Title>
+      <Title> Tickets </Title>
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Date</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Ship To</TableCell>
-            <TableCell>Payment Method</TableCell>
-            <TableCell align="right">Sale Amount</TableCell>
+            <TableCell>Asignador</TableCell>
+            <TableCell>Tecnico</TableCell>
+            <TableCell>Observaciones</TableCell>
+            <TableCell>Estado</TableCell>
+            <TableCell>Opciones</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.shipTo}</TableCell>
-              <TableCell>{row.paymentMethod}</TableCell>
-              <TableCell align="right">{`$${row.amount}`}</TableCell>
+          {tickets.map((ticket) => (
+            <TableRow key={ticket.id}>
+              <TableCell>{ticket.asignador}</TableCell>
+              <TableCell>{ticket.tecnico}</TableCell>
+              <TableCell>{ticket.observacion}</TableCell>
+              <TableCell>{ticket.estado}</TableCell>
+              <TableCell> 
+                <EditIcon  sx={{color:"warning.main",mx: 1}} />
+                <DeleteIcon sx={{color:"error.main"}} />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
