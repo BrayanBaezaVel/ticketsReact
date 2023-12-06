@@ -30,8 +30,8 @@ const estados = [
 
 export default function Tickets() {
   const [tickets, setTickets] = useState([]);
-  const [isEdit, setIsEdit] = useState(false);
   const [estadoSelected, setestadoSelected] = useState(1);
+  const [area, setArea] = useState();
 
   const handleChange = (event) => {
     setestadoSelected(event.target.value);
@@ -42,9 +42,16 @@ export default function Tickets() {
     let data = storedData ? JSON.parse(storedData) : [];
 
     const areaData = localStorage.getItem('area');
-    const area = JSON.parse(areaData);
+    const sessionArea = JSON.parse(areaData);
   
-    setTickets(data.filter((ticket) => ticket.area == area));
+    setArea(sessionArea);
+
+    data.map(d => {
+      d.editar = false;
+      return d
+    });
+  
+    setTickets([...data]);
   }, []);
 
   function eliminarTicket(ticketId){
@@ -64,36 +71,26 @@ export default function Tickets() {
     setTickets([...ticketsFiltered]);
   }
 
-  function actualizar(ticket, estadoSelected) {
-    console.log(estadoSelected);
-    const data = localStorage.getItem('dataTickets');
-    const tickets = JSON.parse(data);
+  async function actualizar(index, estadoSelected) {
+    tickets[index].editar = false;
+    tickets[index].estado = estadoSelected;
 
-    const posicionTicket = tickets.findIndex(ticket => ticket.id === ticket.id);
+    setTickets([...tickets]);
 
-    const ticketModified = {
-      ...ticket, estado: estadoSelected
-    };
-
-    tickets.splice(posicionTicket, 1, ticketModified);
-    
     localStorage.setItem('dataTickets', JSON.stringify(tickets));
-
-    const areaData = localStorage.getItem('area');
-    const area = JSON.parse(areaData);
-
-    const ticketsFiltered = tickets.filter((ticket) => ticket.area == area)
-    setTickets([...ticketsFiltered]);
-
-    setIsEdit(false);
   }
 
-  const editar = () => {
-    if (isEdit == false) {
-      setIsEdit(true);
-    } else {
-      setIsEdit(false);
-    }
+  const editar = (index) => {
+    let data = tickets.map(d => {
+      d.editar = false;
+      return d;
+    })
+
+    setTickets([...data]);
+
+    tickets[index].editar = true;
+
+    setTickets([...tickets]);
   };
 
   return (
@@ -110,42 +107,48 @@ export default function Tickets() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {tickets.map((ticket) => (
-            <TableRow key={ticket.id}>
-              <TableCell>{ticket.asignador}</TableCell>
-              <TableCell>{ticket.tecnico}</TableCell>
-              <TableCell>{ticket.observacion}</TableCell>
-              {isEdit ? <TableCell>
-                        <Select
-                          required
-                          labelId="estadoSelect"
-                          id="estadoSelect"
-                          name="estadoSelect"
-                          label="Estado"
-                          value={estadoSelected}
-                          onChange={handleChange}
-                        >
-                          {estados.map((estado) => (
-                            <MenuItem value={estado.name}>{estado.name}</MenuItem>
-                          ))}
-                        </Select>
-              </TableCell> : <TableCell>{ticket.estado}</TableCell>}
-              <TableCell>
-                {isEdit ? 
-                  <IconButton onClick={() => actualizar(ticket, estadoSelected)}>
-                    <CheckIcon sx={{color:"warning.main"}} />
-                  </IconButton>
-                  : 
-                  <IconButton onClick={editar}>
-                    <EditIcon sx={{color:"warning.main"}} /> 
-                  </IconButton>
-                }
-                <IconButton onClick={() => eliminarTicket(ticket.id)}>
-                  <DeleteIcon sx={{color:"error.main"}} />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
+          {tickets.map((ticket, i) => {
+              if (ticket.area == area) {
+                return (
+                  <TableRow key={ticket.id}>
+                    <TableCell>{ticket.asignador}</TableCell>
+                    <TableCell>{ticket.tecnico}</TableCell>
+                    <TableCell>{ticket.observacion}</TableCell>
+                    {!ticket.editar ? <TableCell>{ticket.estado}</TableCell> : 
+                    <TableCell>
+                      <Select
+                        required
+                        labelId="estadoSelect"
+                        id="estadoSelect"
+                        name="estadoSelect"
+                        label="Estado"
+                        value={estadoSelected}
+                        onChange={handleChange}
+                      >
+                        {estados.map((estado) => (
+                          <MenuItem value={estado.name}>{estado.name}</MenuItem>
+                        ))}
+                      </Select>
+                    </TableCell>}
+                    <TableCell>
+                      {ticket.editar ? 
+                        <IconButton onClick={() => actualizar(i, estadoSelected)}>
+                          <CheckIcon sx={{color:"warning.main"}} />
+                        </IconButton>
+                        : 
+                        <IconButton onClick={() => editar(i)}>
+                          <EditIcon sx={{color:"warning.main"}} /> 
+                        </IconButton>
+                      }
+                      <IconButton onClick={() => eliminarTicket(ticket.id)}>
+                        <DeleteIcon sx={{color:"error.main"}} />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                )
+              }
+            })
+          }
         </TableBody>
       </Table>
     </React.Fragment>
