@@ -22,6 +22,7 @@ import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import AddIcon from '@mui/icons-material/Add';
+import Alert from '@mui/material/Alert';
 
 const drawerWidth = 240;
 
@@ -77,6 +78,7 @@ export function CreateTicket() {
       const storedData = localStorage.getItem('dataTickets');
       return storedData ? JSON.parse(storedData) : [];
     });
+    const [messageResponse, setMessageResponse] = useState();
 
     const toggleDrawer = () => {
         setOpen(!open);
@@ -121,6 +123,12 @@ export function CreateTicket() {
 
         setDataTickets([...dataTickets, ticket]);
         localStorage.setItem('dataTickets', JSON.stringify([...dataTickets, ticket]));
+
+        setMessageResponse(true);
+
+        setTimeout(() => {
+          setMessageResponse(false);
+        }, 3000);
     };
 
   return (
@@ -257,6 +265,13 @@ export function CreateTicket() {
                     </Button>
                 </Box>
               </Grid>
+              {
+                messageResponse ? 
+                  <Alert severity="success" color="success" sx={{mt: 2}}>
+                    Proceso ejecutado correctamente!
+                  </Alert>
+                  : <></>
+              }
             </Grid>
           </Container>
         </Box>

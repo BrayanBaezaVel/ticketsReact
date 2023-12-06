@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import CheckIcon from '@mui/icons-material/Check';
+import Alert from '@mui/material/Alert';
 
 const estados = [
   {
@@ -32,6 +33,7 @@ export default function Tickets() {
   const [tickets, setTickets] = useState([]);
   const [estadoSelected, setestadoSelected] = useState(1);
   const [area, setArea] = useState();
+  const [messageResponse, setMessageResponse] = useState();
 
   const handleChange = (event) => {
     setestadoSelected(event.target.value);
@@ -69,6 +71,12 @@ export default function Tickets() {
 
     const ticketsFiltered = tickets.filter((ticket) => ticket.area == area)
     setTickets([...ticketsFiltered]);
+
+    setMessageResponse(true);
+    
+    setTimeout(() => {
+      setMessageResponse(false);
+    }, 3000);
   }
 
   async function actualizar(index, estadoSelected) {
@@ -78,6 +86,12 @@ export default function Tickets() {
     setTickets([...tickets]);
 
     localStorage.setItem('dataTickets', JSON.stringify(tickets));
+
+    setMessageResponse(true);
+
+    setTimeout(() => {
+      setMessageResponse(false);
+    }, 3000);
   }
 
   const editar = (index) => {
@@ -151,6 +165,13 @@ export default function Tickets() {
           }
         </TableBody>
       </Table>
+      {
+        messageResponse ? 
+          <Alert severity="success" color="success" sx={{mt: 2}}>
+            Proceso ejecutado correctamente!
+          </Alert>
+          : <></>
+      }
     </React.Fragment>
   );
 }
