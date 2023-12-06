@@ -106,13 +106,17 @@ export function CreateTicket() {
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+        const areaData = localStorage.getItem('area');
+        const sessionArea = JSON.parse(areaData);
+
         const ticket = {
+          id: dataTickets.length + 1,
           area: data.get('areaSelect'),
-          areaSolicitante: data.get('areaSolicitanteSelect'),
+          areaSolicitante: sessionArea,
           asignador: data.get('asignadorName'),
           tecnico: data.get('tecnicoName'),
           observacion: data.get('observacion'),
-          estado: 1,
+          estado: 'Pendiente'
         };
 
         setDataTickets([...dataTickets, ticket]);
@@ -195,23 +199,6 @@ export function CreateTicket() {
                 </Typography>
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                     <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <InputLabel id="areaInput">Area Solicitante</InputLabel>
-                        <Select
-                          required
-                          fullWidth
-                          labelId="areaSolicitanteSelect"
-                          id="areaSolicitanteSelect"
-                          name="areaSolicitanteSelect"
-                          label="Area"
-                          value={areaSelected}
-                          onChange={handleChange}
-                        >
-                          {areas.map((area) => (
-                            <MenuItem value={area.id}>{area.name}</MenuItem>
-                          ))}
-                        </Select>
-                    </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
                         autoComplete="given-name"
